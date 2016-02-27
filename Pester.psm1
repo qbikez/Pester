@@ -86,6 +86,8 @@ $moduleRoot = & $script:SafeCommands['Split-Path'] -Path $MyInvocation.MyCommand
 & $script:SafeCommands['Where-Object'] { -not ($_.ProviderPath.ToLower().Contains(".tests.")) } |
 & $script:SafeCommands['ForEach-Object'] { . $_.ProviderPath }
 
+$pester = $null
+
 function Invoke-Pester {
 <#
 .SYNOPSIS
@@ -461,6 +463,10 @@ function SafeGetCommand
     return $script:SafeCommands['Get-Command']
 }
 
+function Get-PesterState {
+	return $Pester
+}
+
 $snippetsDirectoryPath = "$PSScriptRoot\Snippets"
 if ((& $script:SafeCommands['Test-Path'] -Path Variable:\psise) -and
     ($null -ne $psISE) -and
@@ -473,5 +479,5 @@ if ((& $script:SafeCommands['Test-Path'] -Path Variable:\psise) -and
 & $script:SafeCommands['Export-ModuleMember'] Describe, Context, It, In, Mock, Assert-VerifiableMocks, Assert-MockCalled, Set-TestInconclusive
 & $script:SafeCommands['Export-ModuleMember'] New-Fixture, Get-TestDriveItem, Should, Invoke-Pester, Setup, InModuleScope, Invoke-Mock
 & $script:SafeCommands['Export-ModuleMember'] BeforeEach, AfterEach, BeforeAll, AfterAll
-& $script:SafeCommands['Export-ModuleMember'] Get-MockDynamicParameters, Set-DynamicParameterVariables
+& $script:SafeCommands['Export-ModuleMember'] Get-MockDynamicParameters, Set-DynamicParameterVariables, Get-PesterState
 & $script:SafeCommands['Export-ModuleMember'] SafeGetCommand
